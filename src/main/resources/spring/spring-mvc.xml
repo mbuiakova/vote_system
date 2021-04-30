@@ -8,39 +8,39 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
-<!--    <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>-->
+    <bean class="app.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
 
     <!-- serve static resources (*.html, ...) from src/main/webapp/ -->
-    <mvc:default-servlet-handler/>
+<!--    <mvc:default-servlet-handler/>-->
 
     <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled"/>
 
-<!--    <mvc:annotation-driven conversion-service="conversionService">-->
-<!--        <mvc:message-converters>-->
-<!--            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
-<!--                <property name="objectMapper" ref="objectMapper"/>-->
-<!--            </bean>-->
-<!--            <bean class="org.springframework.http.converter.StringHttpMessageConverter">-->
-<!--                <property name="supportedMediaTypes">-->
-<!--                    <list>-->
-<!--                        <value>text/plain;charset=UTF-8</value>-->
-<!--                        <value>text/html;charset=UTF-8</value>-->
-<!--                    </list>-->
-<!--                </property>-->
-<!--            </bean>-->
-<!--        </mvc:message-converters>-->
-<!--    </mvc:annotation-driven>-->
+    <mvc:annotation-driven conversion-service="conversionService">
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper" ref="objectMapper"/>
+            </bean>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/plain;charset=UTF-8</value>
+                        <value>text/html;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
-<!--    <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService">-->
+    <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService">
 <!--        <property name="formatters">-->
 <!--            <set>-->
 <!--                <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalTimeFormatter"/>-->
 <!--                <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalDateFormatter"/>-->
 <!--            </set>-->
 <!--        </property>-->
-<!--    </bean>-->
+    </bean>
 
-    <context:component-scan base-package="app.**.web"/>
+    <context:component-scan base-package="app.web.controller"/>
 
 <!--    &lt;!&ndash;  all resources inside folder src/main/webapp/resources are mapped so they can be referred to inside JSP files &ndash;&gt;-->
 <!--    <mvc:resources mapping="/resources/**" location="/resources/"/>-->
