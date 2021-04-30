@@ -1,13 +1,13 @@
 package app.entity;
 
-//import app.HasId;
+import app.HasId;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public class AbstractBaseEntity  {//implements HasId
+public class AbstractBaseEntity implements HasId {
 
     public static final int START_SEQ = 1;
 
