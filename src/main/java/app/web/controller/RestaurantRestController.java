@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping(value = RestaurantRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,7 +31,12 @@ public class RestaurantRestController {
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id){
         log.info("get restaurant {}", id);
-        return repository.getById(id);
+        Restaurant restaurant = repository.getById(id);
+        if (restaurant != null) {
+            return restaurant;
+        } else {
+            throw new ResponseStatusException(NOT_FOUND, "Unable to find resource");
+        }
     }
 
     @GetMapping
@@ -68,7 +76,7 @@ public class RestaurantRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Restaurant r, int id){
+    public void update(@RequestBody Restaurant r, @PathVariable int id){
         repository.save(r);
     }
 
