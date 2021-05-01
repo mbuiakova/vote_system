@@ -6,7 +6,6 @@ import app.testData.RestaurantsTestData;
 import app.testData.TestUtil;
 import app.testData.UserTestData;
 import app.web.json.JsonUtil;
-import com.jogamp.nativewindow.CapabilitiesFilter;
 import org.hamcrest.text.IsEmptyString;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -88,7 +87,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     void deleteNotFound() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + RestaurantsTestData.NOT_FOUND)
                 .with(TestUtil.userHttpBasic(UserTestData.user)))
-                .andExpect(content().string(IsEmptyString.isEmptyOrNullString()));
+                .andExpect(content().string(IsEmptyString.emptyOrNullString()));
     }
 
     @Test
