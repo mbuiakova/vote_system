@@ -14,6 +14,7 @@ public class UserTestData {
 
     public static final User user = new User(USER_ID, "User Userovich", "user@domain.com", "123456", false);
     public static final User admin = new User(ADMIN_ID, "Admin Adminovich", "admin@domain.com", "654321", true);
+    //public static final User user2 = new User(USER_ID + 2, "AAAA aaaaa", "user1@domain.com", "123456A", false);
 
     public static final List<User> users = List.of(user, admin);
 

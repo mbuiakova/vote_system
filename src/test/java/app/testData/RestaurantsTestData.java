@@ -3,6 +3,7 @@ package app.testData;
 import app.entity.AbstractBaseEntity;
 import app.entity.Menu;
 import app.entity.Restaurant;
+import app.entity.Vote;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.List;
 public class RestaurantsTestData {
 
     public static final TestMatcher<Restaurant> RESTAURANT_TEST_MATCHER = TestMatcher.usingEqualsComparator(Restaurant.class);
+
+    public static final TestMatcher<Vote> VOTE_TEST_MATCHER = TestMatcher.usingEqualsComparator(Vote.class);
 
     public static final int REST_ID_1 = AbstractBaseEntity.START_SEQ + 2;//3
     public static final int NOT_FOUND = 100003;
@@ -20,12 +23,25 @@ public class RestaurantsTestData {
 
     public static final List<Restaurant> restaurants = List.of(rest_1, rest_2, rest_3);
 
+    public static final Vote vote1 = new Vote(REST_ID_1, LocalDate.of(2021, 4, 20), UserTestData.USER_ID);
+    public static final Vote vote2 = new Vote(REST_ID_1 + 1, LocalDate.of(2021, 4, 20), UserTestData.ADMIN_ID);
+
+    public static final List<Vote> votes = List.of(vote1, vote2);
+
     public static Restaurant getNew(){
         return new Restaurant(null, "New restaurant");
     }
 
     public static Restaurant getUpdated(){
         return new Restaurant(REST_ID_1, rest_1.getName() + " Updated");
+    }
+
+    public static Vote getNewVote(){
+        return new Vote(rest_3.id(), LocalDate.of(2021, 5, 1), UserTestData.USER_ID);
+    }
+
+    public static Vote getUpdatedVote(){
+        return new Vote(REST_ID_1 +1, vote1.getDate(), vote1.getUserId());
     }
 
 }

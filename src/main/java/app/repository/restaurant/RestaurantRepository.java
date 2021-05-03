@@ -1,7 +1,10 @@
 package app.repository.restaurant;
 
 import app.entity.Restaurant;
+import app.entity.Vote;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface RestaurantRepository {
@@ -17,4 +20,14 @@ public interface RestaurantRepository {
     List<Restaurant> getAllWithMenus();
 
     Restaurant getByIdWithMenus(int id);
+
+    boolean saveVote(int rest_id, LocalDate date, int user_id);
+
+    List<Vote> getAllVotes();
+
+    List<Vote> getVotesForRestaurant(int id);
+
+    boolean changeVote(Vote vote, int restId, LocalTime time);
+
+
 }

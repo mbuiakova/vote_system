@@ -1,20 +1,23 @@
 package app.repository;
 
 import app.entity.Restaurant;
+import app.entity.Vote;
+import app.exception.IllegalRequestDataException;
 import app.repository.restaurant.RestaurantRepository;
 import app.testData.RestaurantsTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static app.testData.RestaurantsTestData.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringJUnitConfig(locations = {
@@ -27,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 // Надо все профили для работы. У нас это типы для hibernate и базы данных.
 @ActiveProfiles({"hsqldb", "datajpa"})
 //@WebAppConfiguration // работает и без него, т.к. в SpringJUnitConfig уже он есть.
-@Sql(scripts = {"classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))//"classpath:initDB.sql",
+@Sql(scripts = {"classpath:db/initDB.sql", "classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))//,
 public class RestaurantRepositoryImplTest {
 
     @Autowired
@@ -85,5 +88,46 @@ public class RestaurantRepositoryImplTest {
     @Test
     void getByIdWithMenus() {
         RESTAURANT_TEST_MATCHER.assertMatch(repository.getByIdWithMenus(REST_ID_1), rest_1);
+    }
+
+    @Test
+    void saveVote(){
+        Vote vote = getNewVote();
+        assertTrue(repository.saveVote(vote.getRestaurantId(), vote.getDate(), vote.getUserId()));
+        List<Vote> votes = repository.getVotesForRestaurant(vote.getRestaurantId())
+                .stream()
+                .filter(e -> e.getDate().equals(vote.getDate()) && e.getUserId() == vote.getUserId())
+                .collect(Collectors.toList());
+        assertFalse(votes.isEmpty());
+    }
+
+    @Test
+    void getAllVotes(){
+        VOTE_TEST_MATCHER.assertMatch(repository.getAllVotes(), votes);
+    }
+
+    @Test
+    void getVotesForRestaurant(){
+        VOTE_TEST_MATCHER.assertMatch(repository.getVotesForRestaurant(3), List.of(vote1));
+    }
+
+    @Test
+    void changeVoteBeforeTime(){
+        Vote updated = getUpdatedVote();
+        LocalTime time = LocalTime.of(10, 0);
+        repository.changeVote(updated, updated.getRestaurantId(), time);
+        List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
+                .stream()
+                .filter(e -> e.getDate().equals(updated.getDate()) && e.getUserId() == updated.getUserId())
+                .collect(Collectors.toList());
+        assertTrue(votes.contains(updated));
+    }
+
+    @Test
+    void changeVoteAfterTime(){
+        Vote updated = getUpdatedVote();
+        LocalTime time = LocalTime.of(12, 0);
+        assertThrows(IllegalRequestDataException.class, () -> repository.changeVote(updated, updated.getRestaurantId(), time));
+
     }
 }

@@ -1,7 +1,9 @@
 package app.web.controller;
 
 import app.entity.Restaurant;
+import app.entity.Vote;
 import app.repository.restaurant.RestaurantRepository;
+import app.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -80,4 +84,36 @@ public class RestaurantRestController {
         repository.save(r);
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping("/vote/{id}")
+    public ResponseEntity<Vote> saveVote(@PathVariable int id){
+        log.info("save vote for restaurant {}", id);
+        LocalDateTime date = LocalDateTime.now();
+        Vote created = new Vote(id, date.toLocalDate(), 1);
+        repository.saveVote(id, date.toLocalDate(), 1 );//SecurityUtil.authUserId()
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/vote/{id}")
+                .buildAndExpand(created.getRestaurantId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @GetMapping("/votes")
+    public List<Vote> getAllVotes(){
+        log.info("get all votes");
+        return repository.getAllVotes();
+    }
+
+    @GetMapping("/votes/{id}")
+    public List<Vote> getVotesForRestaurant(@PathVariable int id){
+        log.info("get all votes for restaurant {}", id);
+        return repository.getVotesForRestaurant(id);
+    }
+
+    @PutMapping(value = "/vote/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateVote(@RequestBody Vote v, @PathVariable int id){
+        log.info("update vote for restaurant {}", id);
+        var time = LocalTime.now();
+        repository.changeVote(v, id, time);
+    }
 }
