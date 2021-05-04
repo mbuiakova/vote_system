@@ -1,4 +1,4 @@
-package app.web.controller;
+package app.web.controller.user;
 
 import app.entity.User;
 import app.to.UserTo;
@@ -14,7 +14,7 @@ import static app.util.SecurityUtil.authUserId;
 
 @RestController
 @RequestMapping(value = UserRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserRestController extends AbstractUserController{
+public class UserRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
 
     @GetMapping

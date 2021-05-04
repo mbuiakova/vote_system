@@ -1,6 +1,7 @@
 package app.repository.restaurant;
 
 import app.entity.Restaurant;
+import app.entity.Vote;
 import app.entity.VoteProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Transactional(readOnly = true)
@@ -41,5 +43,8 @@ public interface RestaurantRepositoryJPA extends JpaRepository<Restaurant, Integ
     @Modifying
     @Query(value = "UPDATE VOTES v SET RESTAURANT_ID=(:restId) WHERE v.DATE=:date AND v.USER_ID=:userId", nativeQuery = true)
     int changeVote(@Param("restId") int restId, @Param("date") LocalDate date, @Param("userId") int userId);
+
+    @Query(value = "SELECT v.restaurant_id as restaurantId, v.date as date, v.user_id as userId FROM votes v WHERE v.DATE=:date AND v.USER_ID=:userId", nativeQuery = true)
+    Optional<VoteProjection> getVoteByDateAndUserId(@Param("date") LocalDate date, @Param("userId") int userId);
 
 }

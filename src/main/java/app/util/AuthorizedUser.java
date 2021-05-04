@@ -42,7 +42,7 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
         return userTo.toString();
     }
 
-    private static Set<Role> getRoles(User user) {
+    public static Set<Role> getRoles(User user) {
         Set<Role> roles = new HashSet<Role>();
         roles.add(user.isAdmin() ? new Role(true) : new Role(false));
         return roles;

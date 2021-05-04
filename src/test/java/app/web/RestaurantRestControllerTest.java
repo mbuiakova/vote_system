@@ -125,7 +125,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "vote/" + (REST_ID_1 + 2))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newVote))
-                .with(TestUtil.userHttpBasic(UserTestData.user)));
+                .with(TestUtil.userAuth(UserTestData.user)));
 
         Vote created = TestUtil.readFromJson(action, Vote.class);
         VOTE_TEST_MATCHER.assertMatch(created, newVote);

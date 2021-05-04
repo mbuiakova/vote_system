@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles({"hsqldb", "datajpa"})
 //@WebAppConfiguration // работает и без него, т.к. в SpringJUnitConfig уже он есть.
 @Sql(scripts = {"classpath:db/initDB.sql", "classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))//,
-public class RestaurantRepositoryImplTest {
+class RestaurantRepositoryImplTest {
 
     @Autowired
     private RestaurantRepository repository;
@@ -93,7 +93,7 @@ public class RestaurantRepositoryImplTest {
     @Test
     void saveVote(){
         Vote vote = getNewVote();
-        assertTrue(repository.saveVote(vote.getRestaurantId(), vote.getDate(), vote.getUserId()));
+        assertTrue(repository.saveVote(vote.getRestaurantId(), baseDate, vote.getUserId()));
         List<Vote> votes = repository.getVotesForRestaurant(vote.getRestaurantId())
                 .stream()
                 .filter(e -> e.getDate().equals(vote.getDate()) && e.getUserId() == vote.getUserId())
@@ -114,8 +114,7 @@ public class RestaurantRepositoryImplTest {
     @Test
     void changeVoteBeforeTime(){
         Vote updated = getUpdatedVote();
-        LocalTime time = LocalTime.of(10, 0);
-        repository.changeVote(updated, updated.getRestaurantId(), time);
+        repository.saveVote(updated.getRestaurantId(), baseDate, updated.getUserId());
         List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
                 .stream()
                 .filter(e -> e.getDate().equals(updated.getDate()) && e.getUserId() == updated.getUserId())
@@ -126,8 +125,7 @@ public class RestaurantRepositoryImplTest {
     @Test
     void changeVoteAfterTime(){
         Vote updated = getUpdatedVote();
-        LocalTime time = LocalTime.of(12, 0);
-        assertThrows(IllegalRequestDataException.class, () -> repository.changeVote(updated, updated.getRestaurantId(), time));
+        assertThrows(IllegalRequestDataException.class, () -> repository.saveVote(updated.getRestaurantId(), datetimeAfter, updated.getUserId()));
 
     }
 }

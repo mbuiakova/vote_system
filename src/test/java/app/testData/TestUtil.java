@@ -13,6 +13,8 @@ import app.web.json.JsonUtil;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static app.util.AuthorizedUser.getRoles;
+
 public class TestUtil {
     public static String getContent(MvcResult result) throws UnsupportedEncodingException {
         return result.getResponse().getContentAsString();
@@ -30,10 +32,10 @@ public class TestUtil {
         return JsonUtil.readValues(getContent(result), clazz);
     }
 
-//    public static void mockAuthorize(User user) {
-//        SecurityContextHolder.getContext().setAuthentication(
-//                new UsernamePasswordAuthenticationToken(new AuthorizedUser(user), null, ));
-//    }
+    public static void mockAuthorize(User user) {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(new AuthorizedUser(user), null, getRoles(user)));
+    }
 
     public static RequestPostProcessor userHttpBasic(User user) {
         return SecurityMockMvcRequestPostProcessors.httpBasic(user.getEmail(), user.getPassword());

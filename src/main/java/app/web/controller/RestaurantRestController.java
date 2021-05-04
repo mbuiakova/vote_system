@@ -88,9 +88,9 @@ public class RestaurantRestController {
     @RequestMapping("/vote/{id}")
     public ResponseEntity<Vote> saveVote(@PathVariable int id){
         log.info("save vote for restaurant {}", id);
-        LocalDateTime date = LocalDateTime.now();
-        Vote created = new Vote(id, date.toLocalDate(), 1);
-        repository.saveVote(id, date.toLocalDate(), 1 );//SecurityUtil.authUserId()
+        LocalDateTime dateTime = LocalDateTime.now();
+        Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
+        repository.saveVote(id, dateTime, SecurityUtil.authUserId() );//SecurityUtil.authUserId()
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/vote/{id}")
                 .buildAndExpand(created.getRestaurantId()).toUri();
@@ -113,7 +113,7 @@ public class RestaurantRestController {
     @ResponseStatus(HttpStatus.OK)
     public void updateVote(@RequestBody Vote v, @PathVariable int id){
         log.info("update vote for restaurant {}", id);
-        var time = LocalTime.now();
-        repository.changeVote(v, id, time);
+        LocalDateTime time = LocalDateTime.now();
+        repository.saveVote(id, time, v.getUserId());
     }
 }

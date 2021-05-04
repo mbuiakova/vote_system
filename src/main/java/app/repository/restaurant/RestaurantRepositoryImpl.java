@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -52,8 +54,16 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public boolean saveVote(int restId, LocalDate date, int userId) {
-        return repositoryJPA.saveVote(restId, date, userId) != 0;
+    public boolean saveVote(int restId, LocalDateTime date, int userId) {
+        Vote v = getVoteByDateAndUserId(date.toLocalDate(), userId);
+        if (v == null) {
+            return repositoryJPA.saveVote(restId, date.toLocalDate(), userId) != 0;
+        } else {
+            if (date.toLocalTime().isAfter(LocalTime.of(11, 0, 0))) {
+                throw new IllegalRequestDataException("You can't change the vote, it is already 11 o'clock");
+            }
+            return repositoryJPA.changeVote(restId, v.getDate(), v.getUserId()) != 0;
+        }
     }
 
     @Override
@@ -72,12 +82,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean changeVote(Vote oldVote, int newRestId, LocalTime time) {
-        if(time.isAfter(LocalTime.of(11, 0, 0))){
-            throw new IllegalRequestDataException("You can't change the vote, it is already 11 o'clock");
-        }
-        return repositoryJPA.changeVote(newRestId, oldVote.getDate(), oldVote.getUserId()) != 0;
-
+    public Vote getVoteByDateAndUserId(LocalDate date, int userId) {
+        Optional<Vote> v = repositoryJPA.getVoteByDateAndUserId(date, userId).map(e -> new Vote(e.getRestaurantId(), e.getDate(), e.getUserId()));
+        return v.orElse(null); // !!!! make a constructor in Vote with VoteProjection
     }
 }

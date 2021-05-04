@@ -1,4 +1,4 @@
-package app.web.controller;
+package app.web.controller.user;
 
 import app.entity.User;
 import app.repository.user.UserRepository;
@@ -46,11 +46,13 @@ public class AbstractUserController {
 
     public void update(User user){
         log.info("update {} with id={}", user, user.getId());
+        ValidationUtil.assureIdConsistent(user, user.id());
         repository.save(user);
     }
 
     public void update(UserTo userTo){
         log.info("update {}", userTo);
+        ValidationUtil.assureIdConsistent(userTo, userTo.id());
         repository.save(UserUtil.createNewFromTo(userTo));
     }
 
