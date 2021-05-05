@@ -45,6 +45,10 @@ public class RestaurantsTestData {
         return new Vote(rest_3.id(), LocalDate.now(), UserTestData.USER_ID);
     }
 
+    public static Vote getNewVoteWithBaseDate(){
+        return new Vote(rest_3.id(), LocalDate.of(2021, 4, 20), UserTestData.USER_ID);
+    }
+
     public static Vote getUpdatedVote(){
         return new Vote(REST_ID_1 +1, vote1.getDate(), vote1.getUserId());
     }

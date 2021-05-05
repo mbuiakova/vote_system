@@ -92,7 +92,7 @@ class RestaurantRepositoryImplTest {
 
     @Test
     void saveVote(){
-        Vote vote = getNewVote();
+        Vote vote = getNewVoteWithBaseDate();
         assertTrue(repository.saveVote(vote.getRestaurantId(), baseDate, vote.getUserId()));
         List<Vote> votes = repository.getVotesForRestaurant(vote.getRestaurantId())
                 .stream()

@@ -2,6 +2,7 @@ package app.web.controller;
 
 import app.entity.Restaurant;
 import app.entity.Vote;
+import app.exception.NotFoundException;
 import app.repository.restaurant.RestaurantRepository;
 import app.util.SecurityUtil;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class RestaurantRestController {
         if (restaurant != null) {
             return restaurant;
         } else {
-            throw new ResponseStatusException(NOT_FOUND, "Unable to find resource");
+            throw new NotFoundException("Unable to find resource");
         }
     }
 
