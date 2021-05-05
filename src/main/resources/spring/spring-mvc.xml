@@ -29,6 +29,9 @@
                 </property>
             </bean>
         </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver "/>
+        </mvc:argument-resolvers>
     </mvc:annotation-driven>
 
     <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService">
@@ -40,7 +43,7 @@
 <!--        </property>-->
     </bean>
 
-    <context:component-scan base-package="app.web.controller"/>
+    <context:component-scan base-package="app.web"/>
 
 <!--    &lt;!&ndash;  all resources inside folder src/main/webapp/resources are mapped so they can be referred to inside JSP files &ndash;&gt;-->
 <!--    <mvc:resources mapping="/resources/**" location="/resources/"/>-->
@@ -63,11 +66,16 @@
             </property>
         </bean>
     -->
+
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
           p:cacheSeconds="5"
           p:defaultEncoding="UTF-8">
         <property name="basenames" value="file:///#{systemEnvironment[VOTE_SYSTEM_ROOT]}/config/messages/app"/>
         <property name="fallbackToSystemLocale" value="false"/>
+    </bean>
+
+    <bean class="org.springframework.context.support.MessageSourceAccessor">
+        <constructor-arg ref="messageSource"/>
     </bean>
 
     <!--    https://stackoverflow.com/a/23615478/548473-->

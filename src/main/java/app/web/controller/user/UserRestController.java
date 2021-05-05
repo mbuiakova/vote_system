@@ -1,4 +1,4 @@
-package app.web.user;
+package app.web.controller.user;
 
 import app.entity.User;
 import app.to.UserTo;
@@ -33,7 +33,7 @@ public class UserRestController extends AbstractUserController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> save(@Valid @RequestBody UserTo userTo){
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo){
         User created = super.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
@@ -41,7 +41,7 @@ public class UserRestController extends AbstractUserController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) throws BindException {
         validateBeforeUpdate(userTo, authUser.getId());
         super.update(userTo);

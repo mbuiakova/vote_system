@@ -1,4 +1,4 @@
-package app.web.user;
+package app.web.controller.user;
 
 import app.entity.User;
 import org.springframework.http.HttpStatus;

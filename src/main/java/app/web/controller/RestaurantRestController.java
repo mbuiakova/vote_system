@@ -87,7 +87,7 @@ public class RestaurantRestController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping("/vote/{id}")
     public ResponseEntity<Vote> saveVote(@PathVariable int id){
-        log.info("save vote for restaurant {}", id);
+        log.info("register vote for restaurant {}", id);
         LocalDateTime dateTime = LocalDateTime.now();
         Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
         repository.saveVote(id, dateTime, SecurityUtil.authUserId() );//SecurityUtil.authUserId()

@@ -1,13 +1,21 @@
-package app.web.user;
+package app.web.controller.user;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserRestControllerTest {
+class AdminRestControllerTest {
 
     @Test
-    void get() {
+    void getAll() {
+    }
+
+    @Test
+    void getById() {
+    }
+
+    @Test
+    void createWithLocation() {
     }
 
     @Test
@@ -15,7 +23,7 @@ class UserRestControllerTest {
     }
 
     @Test
-    void save() {
+    void getByEmail() {
     }
 
     @Test

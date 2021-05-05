@@ -15,14 +15,19 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
 
     private UserTo userTo;
 
-    public AuthorizedUser(Collection<? extends GrantedAuthority> authorities, User user) {
-        super(user.getName(), user.getPassword(), authorities);
-        this.userTo = UserUtil.asTo(user);
-    }
+//    public AuthorizedUser(Collection<? extends GrantedAuthority> authorities, User user) {
+//        super(user.getName(), user.getPassword(), authorities);
+//        this.userTo = UserUtil.asTo(user);
+//    }
 
     public AuthorizedUser(User user) {
         super(user.getName(), user.getPassword(),true, true, true, true, AuthorizedUser.getRoles(user));
-        this.userTo = UserUtil.asTo(user);
+        setTo(UserUtil.asTo(user));
+    }
+
+    public void setTo(UserTo newTo) {
+        newTo.setPassword(null);
+        userTo = newTo;
     }
 
     public int getId() {

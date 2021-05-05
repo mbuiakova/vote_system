@@ -28,6 +28,11 @@ public class TestMatcher<T> {
         return usingAssertions(clazz, (a, e) -> assertThat(a).isEqualTo(e), (a, e) -> assertThat(a).isEqualTo(e));
     }
 
+    @SafeVarargs
+    public final void assertMatch(Iterable<T> actual, T... expected) {
+        assertMatch(actual, List.of(expected));
+    }
+
     public void assertMatch(T actual, T expected) {
         assertion.accept(actual, expected);
     }

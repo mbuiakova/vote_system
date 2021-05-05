@@ -1,12 +1,14 @@
 package app.to;
 
 
+import app.HasIdAndEmail;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-public class UserTo extends BaseTo implements Serializable {
+public class UserTo extends BaseTo implements Serializable, HasIdAndEmail {
 
     private static final long serialVersionUID = 1L;
 
@@ -49,6 +51,7 @@ public class UserTo extends BaseTo implements Serializable {
         this.name = name;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }

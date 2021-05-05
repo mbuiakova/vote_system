@@ -87,38 +87,54 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
+    void deleteRestaurantIfAdmin() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + REST_ID_1)
-                .with(TestUtil.userHttpBasic(UserTestData.user)))
+                .with(TestUtil.userHttpBasic(admin)))
                 .andExpect(status().isOk());
         Assertions.assertNull(repository.getById(REST_ID_1));
     }
 
     @Test
+    void deleteRestaurantIfUser() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + REST_ID_1)
+                .with(TestUtil.userHttpBasic(user)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void deleteNotFound() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + NOT_FOUND)
-                .with(TestUtil.userHttpBasic(UserTestData.user)))
+                .with(TestUtil.userHttpBasic(admin)))
                 .andExpect(content().string(IsEmptyString.emptyOrNullString()));
     }
 
     @Test
-    void update() throws Exception {
+    void updateRestaurantIfAdmin() throws Exception {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + REST_ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated))
-                .with(TestUtil.userHttpBasic(UserTestData.user))).andExpect(status().isOk());
+                .with(TestUtil.userHttpBasic(admin))).andExpect(status().isOk());
 
         RESTAURANT_TEST_MATCHER.assertMatch(repository.getById(REST_ID_1), updated);
     }
 
     @Test
-    void create() throws Exception {
+    void updateRestaurantIfUser() throws Exception {
+        Restaurant updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + REST_ID_1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(TestUtil.userHttpBasic(user))).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void createRestaurantAdmin() throws Exception {
         Restaurant newR = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newR))
-                .with(TestUtil.userHttpBasic(UserTestData.user)));
+                .with(TestUtil.userHttpBasic(admin))).andExpect(status().isCreated());
 
         Restaurant created = TestUtil.readFromJson(action, Restaurant.class);
         int newId = created.id();
@@ -128,14 +144,30 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void saveVote() throws Exception {
+    void createRestaurantUser() throws Exception {
+        Restaurant newR = getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newR))
+                .with(TestUtil.userHttpBasic(user))).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void saveVoteAuth() throws Exception {
         Vote newVote = getNewVote();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "vote/" + (REST_ID_1 + 2))
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(UserTestData.user)));//TestUtil.userAuth(UserTestData.user)
+                .with(userHttpBasic(user))).andExpect(status().isCreated());//TestUtil.userAuth(UserTestData.user)
 
         Vote created = TestUtil.readFromJson(action, Vote.class);
         VOTE_TEST_MATCHER.assertMatch(created, newVote);
+    }
+
+    @Test
+    void saveVoteAnonymous() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + "vote/" + (REST_ID_1 + 2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
