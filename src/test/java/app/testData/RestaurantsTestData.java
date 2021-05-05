@@ -42,7 +42,7 @@ public class RestaurantsTestData {
     }
 
     public static Vote getNewVote(){
-        return new Vote(rest_3.id(), baseDate.toLocalDate(), UserTestData.USER_ID);
+        return new Vote(rest_3.id(), LocalDate.now(), UserTestData.USER_ID);
     }
 
     public static Vote getUpdatedVote(){

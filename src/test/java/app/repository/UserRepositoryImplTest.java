@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
@@ -38,9 +37,9 @@ class UserRepositoryImplTest {
 
     @Test
     void save() {
-        User created = repository.save(getNew());
+        User created = repository.save(getNewUser());
         int id = created.getId();
-        User newUser = getNew();
+        User newUser = getNewUser();
         newUser.setId(id);
         USER_TEST_MATCHER.assertMatch(created, newUser);
         USER_TEST_MATCHER.assertMatch(repository.get(id), newUser);
@@ -48,9 +47,9 @@ class UserRepositoryImplTest {
 
     @Test
     void update() {
-        User updated = getUpdated();
+        User updated = getUpdatedUser();
         repository.save(updated);
-        USER_TEST_MATCHER.assertMatch(repository.get(USER_ID), getUpdated());
+        USER_TEST_MATCHER.assertMatch(repository.get(USER_ID), getUpdatedUser());
     }
 
     @Test
@@ -61,7 +60,7 @@ class UserRepositoryImplTest {
 
     @Test
     void getNotFound(){
-        assertNull(repository.get(NOT_FOUND));
+        assertNull(repository.get(USER_NOT_FOUND));
     }
 
     @Test
@@ -78,6 +77,6 @@ class UserRepositoryImplTest {
 
     @Test
     void deleteNotFound(){
-        assertFalse(repository.delete(NOT_FOUND));
+        assertFalse(repository.delete(USER_NOT_FOUND));
     }
 }

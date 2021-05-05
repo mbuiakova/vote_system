@@ -5,5 +5,5 @@
 <!--    <import resource="spring-cache.xml"/>-->
     <import resource="spring-security.xml"/>
 
-<!--    <context:component-scan base-package="ru.javawebinar.**.service"/>-->
+    <context:component-scan base-package="app.service"/>
 </beans>
