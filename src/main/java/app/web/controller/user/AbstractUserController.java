@@ -73,7 +73,7 @@ public class AbstractUserController {
         repository.save(user);
     }
 
-    public void update(UserTo userTo){
+    public void update(UserTo userTo) throws BindException {
         log.info("update {}", userTo);
         ValidationUtil.assureIdConsistent(userTo, userTo.id());
         repository.save(UserUtil.createNewFromTo(userTo));

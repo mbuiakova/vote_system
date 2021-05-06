@@ -6,18 +6,22 @@ import app.repository.restaurant.RestaurantRepository;
 import app.testData.TestUtil;
 import app.testData.UserTestData;
 import app.web.json.JsonUtil;
+import org.aspectj.lang.annotation.Before;
 import org.hamcrest.text.IsEmptyString;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,9 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private RestaurantRepository repository;
+
+    @Autowired
+    private Clock clock;
 
     @Test
     void get() throws Exception {
@@ -154,7 +161,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void saveVoteAuth() throws Exception {
-        Vote newVote = getNewVote();
+        Vote newVote = getNewVoteWithBaseDate();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "vote/" + (REST_ID_1 + 2))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))).andExpect(status().isCreated());//TestUtil.userAuth(UserTestData.user)
@@ -190,21 +197,19 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(VOTE_TEST_MATCHER.contentJson(List.of(vote1)));
     }
 
-//    @Test
-//    void updateVote() throws Exception {
-//        Vote v = new Vote(vote1.getRestaurantId(), LocalDate.now(), vote1.getUserId());
-//        repository.saveVote(vote1.getRestaurantId(), LocalDateTime.of(2021, 5, 5, 10, 0, 0), vote1.getUserId());
-//        Vote updated = new Vote(v.getRestaurantId()+1, v.getDate(), v.getUserId());
-//
-//        perform(MockMvcRequestBuilders.put(REST_URL + "vote/" + (REST_ID_1 + 1))
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(JsonUtil.writeValue(updated))
-//                .with(TestUtil.userHttpBasic(UserTestData.user))).andExpect(status().isOk());
-//
-//        List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
-//                .stream()
-//                .filter(e -> e.getDate().equals(updated.getDate()) && e.getUserId() == updated.getUserId())
-//                .collect(Collectors.toList());
-//        assertFalse(votes.isEmpty());
-//    }
+    @Test
+    void updateVote() throws Exception {
+        Vote updated = getUpdatedVote();//2021, 4, 20
+
+        perform(MockMvcRequestBuilders.put(REST_URL + "vote/" + (REST_ID_1+1))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(TestUtil.userHttpBasic(user))).andExpect(status().isOk());
+
+        List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
+                .stream()
+                .filter(e -> e.getDate().equals(updated.getDate()) && e.getUserId() == updated.getUserId())
+                .collect(Collectors.toList());
+        assertFalse(votes.isEmpty());
+    }
 }

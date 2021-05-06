@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("userService")
@@ -16,11 +15,9 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
-    //private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository repository) {
         this.repository = repository;
-        //this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -31,8 +28,4 @@ public class UserService implements UserDetailsService {
         }
         return new AuthorizedUser(user);
     }
-
-    //private User prepareAndSave(User user) {
-//        return repository.save(prepareToSave(user, passwordEncoder));
-//    }
 }

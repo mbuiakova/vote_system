@@ -14,6 +14,7 @@ import app.util.AuthorizedUser;
 
 import javax.validation.Valid;
 import java.net.URI;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping(value = UserRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,13 +22,13 @@ public class UserRestController extends AbstractUserController {
     static final String REST_URL = "/profile";
 
     @GetMapping
-    public User get(@AuthenticationPrincipal AuthorizedUser authUser){
+    public User get(@AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser){
         return super.getById(authUser.getId());
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@AuthenticationPrincipal AuthorizedUser authUser){
+    public void delete(@AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser){
         super.delete(authUser.getId());
     }
 
@@ -42,7 +43,7 @@ public class UserRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) throws BindException {
+    public void update(@RequestBody UserTo userTo, @AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser) throws BindException {
         validateBeforeUpdate(userTo, authUser.getId());
         super.update(userTo);
     }

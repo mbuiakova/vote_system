@@ -12,15 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping(value = RestaurantRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,6 +27,9 @@ public class RestaurantRestController {
 
     @Autowired
     private RestaurantRepository repository;
+
+    @Autowired
+    private Clock clock;
 
     static final String REST_URL = "/restaurants";
 
@@ -70,8 +70,8 @@ public class RestaurantRestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> create(@RequestBody Restaurant r){
-        Restaurant created = repository.save(r);
+    public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant){
+        Restaurant created = repository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -81,17 +81,18 @@ public class RestaurantRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Restaurant r, @PathVariable int id){
-        repository.save(r);
+    public void update(@RequestBody Restaurant restaurant, @PathVariable int id){
+        repository.save(restaurant);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping("/vote/{id}")
+    @PostMapping(value = "/vote/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> saveVote(@PathVariable int id){
         log.info("register vote for restaurant {}", id);
-        LocalDateTime dateTime = LocalDateTime.now();
+
+        LocalDateTime dateTime = LocalDateTime.now(clock);
         Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
-        repository.saveVote(id, dateTime, SecurityUtil.authUserId() );//SecurityUtil.authUserId()
+        repository.saveVote(id, dateTime, SecurityUtil.authUserId() );
+
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/vote/{id}")
                 .buildAndExpand(created.getRestaurantId()).toUri();
@@ -112,9 +113,9 @@ public class RestaurantRestController {
 
     @PutMapping(value = "/vote/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void updateVote(@RequestBody Vote v, @PathVariable int id){
+    public void updateVote(@RequestBody Vote vote, @PathVariable int id){
         log.info("update vote for restaurant {}", id);
-        LocalDateTime time = LocalDateTime.now();
-        repository.saveVote(id, time, v.getUserId());
+        LocalDateTime time = LocalDateTime.now(clock);
+        repository.saveVote(id, time, vote.getUserId());
     }
 }

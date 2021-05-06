@@ -1,6 +1,7 @@
 package app.testData;
 
 import app.entity.User;
+import app.web.json.JsonUtil;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class UserTestData {
     public static final List<User> users = List.of(user, admin);
 
     public static User getNewUser(){
-        return new User(null, "John Smith", "lala@email.com", "lalala", false);
+        return new User(null, "John Smith", "lala23@email.com", "lalala", false);
     }
 
     public static User getUpdatedUser(){
@@ -29,6 +30,10 @@ public class UserTestData {
         updated.setName("Updated updated");
         updated.setAdmin(true);
         return updated;
+    }
+
+    public static String jsonWithPassword(User user, String passw) {
+        return JsonUtil.writeAdditionProps(user, "password", passw);
     }
 
 }

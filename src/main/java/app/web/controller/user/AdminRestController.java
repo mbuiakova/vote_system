@@ -1,6 +1,7 @@
 package app.web.controller.user;
 
 import app.entity.User;
+import app.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,12 @@ public class AdminRestController extends AbstractUserController {
     @Override
     @GetMapping("/{id}")
     public User getById(@PathVariable int id) {
-        return super.getById(id);
+        User user = super.getById(id);
+        if (user != null) {
+            return user;
+        } else {
+            throw new NotFoundException("Unable to find resource");
+        }
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

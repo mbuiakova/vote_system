@@ -1,5 +1,7 @@
 package app.entity;
 
+import app.HasIdAndEmail;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -7,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name="users_unique_email_idx")})
-public class User extends AbstractNamedEntity{
+public class User extends AbstractNamedEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false, unique = true)
     @Email

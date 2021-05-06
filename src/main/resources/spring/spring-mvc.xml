@@ -10,9 +10,6 @@
 
     <bean class="app.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
 
-    <!-- serve static resources (*.html, ...) from src/main/webapp/ -->
-<!--    <mvc:default-servlet-handler/>-->
-
     <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled"/>
 
     <mvc:annotation-driven conversion-service="conversionService">
@@ -35,37 +32,21 @@
     </mvc:annotation-driven>
 
     <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService">
-<!--        <property name="formatters">-->
-<!--            <set>-->
-<!--                <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalTimeFormatter"/>-->
-<!--                <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalDateFormatter"/>-->
-<!--            </set>-->
-<!--        </property>-->
     </bean>
 
-    <context:component-scan base-package="app.web"/>
+    <!--  Swagger2  https://medium.com/@andreymamontov/swagger-2-configuration-with-spring-xml-3cd643a12425 -->
+    <mvc:resources order="1" location="classpath:/META-INF/resources/" mapping="/resources/**" />
+    <mvc:resources mapping="/webjars/**"
+                   location="classpath:/META-INF/resources/webjars/" />
+    <context:component-scan base-package="app.web">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller" />
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+    </context:component-scan>
 
-<!--    &lt;!&ndash;  all resources inside folder src/main/webapp/resources are mapped so they can be referred to inside JSP files &ndash;&gt;-->
-<!--    <mvc:resources mapping="/resources/**" location="/resources/"/>-->
-
-<!--    &lt;!&ndash; use WebJars so Javascript and CSS libs can be declared as Maven dependencies (Bootstrap, jQuery...) &ndash;&gt;-->
-<!--    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>-->
-
-<!--    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"-->
-<!--          p:prefix="/WEB-INF/jsp/"-->
-<!--          p:suffix=".jsp"/>-->
-
-    <!--
-        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
-              p:cacheSeconds="60"
-              p:defaultEncoding="UTF-8">
-            <property name="basenames">
-                <list>
-                    <value>messages/app</value>
-                </list>
-            </property>
-        </bean>
-    -->
+    <bean class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration"/>
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
           p:cacheSeconds="5"
