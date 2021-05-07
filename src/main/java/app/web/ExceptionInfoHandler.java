@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -66,8 +67,11 @@ public class ExceptionInfoHandler {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorInfo> bindValidationError(HttpServletRequest req, BindException e) {
+//        String[] details = e.getBindingResult().getFieldErrors().stream()
+//                .map(messageSourceAccessor::getMessage)
+//                .toArray(String[]::new);
         String[] details = e.getBindingResult().getFieldErrors().stream()
-                .map(messageSourceAccessor::getMessage)
+                .map(FieldError::toString)
                 .toArray(String[]::new);
 
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, details);

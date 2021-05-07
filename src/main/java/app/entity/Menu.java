@@ -1,6 +1,9 @@
 package app.entity;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -10,7 +13,11 @@ public class Menu implements Serializable, MenuProjection {
 
     private static final long serialVersionUID = 1L;
 
+    @NotNull
     private LocalDate date;
+    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 1024)
     private String menu;
 
     public Menu() {

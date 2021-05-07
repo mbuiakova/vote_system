@@ -1,5 +1,6 @@
 package app.entity;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class Vote implements Serializable, VoteProjection {
     private static final long serialVersionUID = 1L;
 
     private int restaurantId;
+    @NotNull
     private LocalDate date;
     private int userId;
 

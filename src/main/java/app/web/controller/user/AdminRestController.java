@@ -1,6 +1,7 @@
 package app.web.controller.user;
 
 import app.entity.User;
+import app.exception.IllegalRequestDataException;
 import app.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,13 +55,14 @@ public class AdminRestController extends AbstractUserController {
     @Override
     @GetMapping("/by")
     public User getByEmail(@RequestParam String email) {
+        if(email.isEmpty() || email.isBlank()) throw new IllegalRequestDataException("Email is empty");
         return super.getByEmail(email);
     }
 
     @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user) throws BindException {
+    public void update(@Valid @RequestBody User user) throws BindException {
         validateBeforeUpdate(user, user.id());
         super.update(user);
     }

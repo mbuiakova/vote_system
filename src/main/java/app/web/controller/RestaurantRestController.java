@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -73,7 +75,7 @@ public class RestaurantRestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> create(@Valid @RequestBody Restaurant restaurant) {
         Restaurant created = repository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -84,7 +86,7 @@ public class RestaurantRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
+    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         repository.save(restaurant);
     }
 
@@ -116,7 +118,7 @@ public class RestaurantRestController {
 
     @PutMapping(value = "/{id}/vote", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void updateVote(@RequestBody Vote vote, @PathVariable int id) {
+    public void updateVote(@Valid @RequestBody Vote vote, @PathVariable int id) {
         log.info("update vote for restaurant {}", id);
         LocalDateTime time = LocalDateTime.now(clock);
         repository.saveVote(id, time, vote.getUserId());
@@ -125,6 +127,8 @@ public class RestaurantRestController {
     @PostMapping(value = "/{id}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Menu> saveMenu(@RequestBody String menu, @PathVariable int id) {
         log.info("register menu for restaurant {}", id);
+
+        if(menu.isEmpty() || menu.isBlank()) throw new IllegalRequestDataException("You can't save empty menu");
 
         LocalDateTime dateTime = LocalDateTime.now(clock);
         if (repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id) != null) {
@@ -140,7 +144,7 @@ public class RestaurantRestController {
     }
 
     @GetMapping("/{id}/menu")
-    public Menu getMenuByDateForRestaurant(@RequestParam LocalDate date, @PathVariable int id) {
+    public Menu getMenuByDateForRestaurant(@RequestParam @NotNull LocalDate date, @PathVariable int id) {
         log.info("get menu for restaurant {}", id);
         return repository.getMenuByDateForRestaurant(date, id);
     }
