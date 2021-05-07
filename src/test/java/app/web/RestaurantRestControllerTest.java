@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -158,7 +157,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void saveVoteAuth() throws Exception {
         Vote newVote = getNewVoteWithBaseDate();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "vote/" + (REST_ID_1 + 2))
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/vote")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))).andExpect(status().isCreated());//TestUtil.userAuth(UserTestData.user)
 
@@ -168,7 +167,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void saveVoteAnonymous() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + "vote/" + (REST_ID_1 + 2))
+        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/vote")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -185,7 +184,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getVotesForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "votes/" + REST_ID_1)
+        perform(MockMvcRequestBuilders.get(REST_URL + REST_ID_1 + "/votes")
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -197,7 +196,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     void updateVote() throws Exception {
         Vote updated = getUpdatedVote();//2021, 4, 20
 
-        perform(MockMvcRequestBuilders.put(REST_URL + "vote/" + (REST_ID_1 + 1))
+        perform(MockMvcRequestBuilders.put(REST_URL + (REST_ID_1 + 1) + "/vote" )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated))
                 .with(TestUtil.userHttpBasic(user))).andExpect(status().isOk());
@@ -212,7 +211,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void createMenu_ifAdmin() throws Exception {
         Menu newMenu = getNewMenu();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "menu/" + (REST_ID_1 + 2))
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/menu" )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenu.getMenu()))
                 .with(userHttpBasic(admin))).andExpect(status().isCreated());
@@ -224,7 +223,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void createMenu_ifUser() throws Exception {
         Menu newMenu = getNewMenu();
-        perform(MockMvcRequestBuilders.post(REST_URL + "menu/" + (REST_ID_1 + 2))
+        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/menu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenu.getMenu()))
                 .with(userHttpBasic(user))).andExpect(status().isForbidden());
@@ -232,7 +231,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createMenu_ifExist() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + "menu/" + (REST_ID_1))
+        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1) +"/menu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menu1_3.getMenu()))
                 .with(userHttpBasic(user))).andExpect(status().isForbidden());
@@ -240,7 +239,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getMenuByDateForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "menu/" + REST_ID_1)
+        perform(MockMvcRequestBuilders.get(REST_URL + REST_ID_1 + "/menu")
                 .param("date", "2021-04-20")
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
@@ -251,7 +250,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllMenusForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "menus/" + (REST_ID_1 +1))
+        perform(MockMvcRequestBuilders.get(REST_URL + (REST_ID_1 +1) +"/menus")
         .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andDo(print())
