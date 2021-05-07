@@ -1,8 +1,10 @@
 package app.repository.restaurant;
 
+import app.entity.Menu;
 import app.entity.Restaurant;
 import app.entity.Vote;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,5 +28,9 @@ public interface RestaurantRepository {
 
     List<Vote> getVotesForRestaurant(int id);
 
+    boolean saveMenu(int restId, LocalDate date, String menu);
 
+    Menu getMenuByDateForRestaurant(LocalDate date, int id);
+
+    List<Menu> getAllMenusForRestaurant(int id);
 }

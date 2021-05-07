@@ -1,5 +1,6 @@
 package app.repository.restaurant;
 
+import app.entity.Menu;
 import app.entity.Restaurant;
 import app.entity.Vote;
 import app.exception.IllegalRequestDataException;
@@ -86,4 +87,23 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         Optional<Vote> v = repository.getVoteByDateAndUserId(date, userId).map(e -> new Vote(e.getRestaurantId(), e.getDate(), e.getUserId()));
         return v.orElse(null); // !!!! make a constructor in Vote with VoteProjection
     }
+
+    @Override
+    public boolean saveMenu(int restId, LocalDate date, String menu) {
+        return repository.saveMenu(restId, date, menu) != 0;
+    }
+
+    @Override
+    public Menu getMenuByDateForRestaurant(LocalDate date, int id) {
+        Optional<Menu> m = repository.getMenuByDateForRestaurant(date, id).map(e -> new Menu(e.getDate(), e.getMenu()));
+        return m.orElse(null);
+    }
+
+    @Override
+    public List<Menu> getAllMenusForRestaurant(int id) {
+        return repository.getAllMenusForRestaurant(id).stream()
+                .map(e -> new Menu(e.getDate(), e.getMenu())).collect(Collectors.toList());
+    }
+
+
 }

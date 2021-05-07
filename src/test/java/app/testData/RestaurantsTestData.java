@@ -5,6 +5,7 @@ import app.entity.Menu;
 import app.entity.Restaurant;
 import app.entity.Vote;
 
+import javax.swing.plaf.PanelUI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,8 @@ public class RestaurantsTestData {
     public static final TestMatcher<Restaurant> RESTAURANT_TEST_MATCHER = TestMatcher.usingEqualsComparator(Restaurant.class);
 
     public static final TestMatcher<Vote> VOTE_TEST_MATCHER = TestMatcher.usingEqualsComparator(Vote.class);
+
+    public static final TestMatcher<Menu> MENU_TEST_MATCHER = TestMatcher.usingEqualsComparator(Menu.class);
 
     public static final LocalDateTime baseDate = LocalDateTime.of(2021, 4, 20, 10, 0, 0);
     //public static final LocalDateTime datetimeBefore = LocalDateTime.of(2021, 4, 25, 10, 59, 0);
@@ -33,11 +36,17 @@ public class RestaurantsTestData {
 
     public static final List<Vote> votes = List.of(vote1, vote2);
 
-    public static Restaurant getNew(){
+    public static final Menu menu1_3 = new Menu(LocalDate.of(2021, 4, 20), "item, item2, item3, drink, dessert");
+    public static final Menu menu2_4 = new Menu(LocalDate.of(2021, 4, 20), "pizza, pizza, pizza, cola, sugar");
+    public static final Menu menu3_4 = new Menu(LocalDate.of(2021, 4, 21), "bread, salad, cheese, cola");
+
+    public static final List<Menu> menus_rest_2 = List.of(menu2_4, menu3_4);
+
+    public static Restaurant getNewRestaurant(){
         return new Restaurant(null, "New restaurant");
     }
 
-    public static Restaurant getUpdated(){
+    public static Restaurant getUpdatedRestaurant(){
         return new Restaurant(REST_ID_1, rest_1.getName() + " Updated");
     }
 
@@ -51,6 +60,10 @@ public class RestaurantsTestData {
 
     public static Vote getUpdatedVote(){
         return new Vote(REST_ID_1 +1, vote1.getDate(), vote1.getUserId());
+    }
+
+    public static Menu getNewMenu(){
+        return new Menu(baseDate.toLocalDate(), "dish, dish1, dish2, drink, dessert");
     }
 
 }

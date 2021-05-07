@@ -12,9 +12,11 @@
 
     <http>
         <intercept-url pattern="/profile/register" access="isAnonymous()"/>
-        <intercept-url method="DELETE" pattern="/restaurants/*" access="hasRole('ADMIN')"/>
-        <intercept-url method="POST" pattern="/restaurants/*" access="hasRole('ADMIN')"/>
-        <intercept-url method="PUT" pattern="/restaurants/*" access="hasRole('ADMIN')"/>
+        <intercept-url method="DELETE" pattern="/restaurants/**" access="hasRole('ADMIN')"/>
+        <intercept-url method="POST" pattern="/restaurants/vote/*" access="isAuthenticated()"/>
+        <intercept-url method="PUT" pattern="/restaurants/vote/*" access="isAuthenticated()"/>
+        <intercept-url method="POST" pattern="/restaurants/**" access="hasRole('ADMIN')"/>
+        <intercept-url method="PUT" pattern="/restaurants/**" access="hasRole('ADMIN')"/>
 
         <intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
         <intercept-url pattern="/swagger-ui.html" access="permitAll()"/>

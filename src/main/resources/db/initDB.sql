@@ -48,3 +48,6 @@ CREATE TABLE menu_history
 
     FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX menu_history_unique_idx
+    ON menu_history (restaurant_id, date);

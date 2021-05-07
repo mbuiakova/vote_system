@@ -32,6 +32,12 @@
     </mvc:annotation-driven>
 
     <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService">
+        <property name="formatters">
+            <set>
+                <bean class="app.web.converter.DateTimeFormatters.LocalTimeFormatter"/>
+                <bean class="app.web.converter.DateTimeFormatters.LocalDateFormatter"/>
+            </set>
+        </property>
     </bean>
 
     <!--  Swagger2  https://medium.com/@andreymamontov/swagger-2-configuration-with-spring-xml-3cd643a12425 -->

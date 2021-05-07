@@ -1,8 +1,6 @@
 package app.repository.restaurant;
 
-import app.entity.Restaurant;
-import app.entity.Vote;
-import app.entity.VoteProjection;
+import app.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +25,19 @@ public interface RestaurantRepositoryJPA extends JpaRepository<Restaurant, Integ
 
     @Query("SELECT DISTINCT r FROM Restaurant r LEFT JOIN FETCH r.menus")
     List<Restaurant> getAllWithMenus();
+
+
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO MENU_HISTORY (restaurant_id, date, menu) VALUES (:restId, :date, :menu)", nativeQuery = true)
+    int saveMenu(@Param("restId") int restId, @Param("date") LocalDate date, @Param("menu") String menu);
+
+    @Query(value = "SELECT m.date as date, m.MENU as menu FROM MENU_HISTORY m WHERE m.DATE=:date AND m.RESTAURANT_ID=:restId", nativeQuery = true)
+    Optional<MenuProjection> getMenuByDateForRestaurant(@Param("date") LocalDate date, @Param("restId") int restId);
+
+    @Query(value = "SELECT m.date as date, m.MENU as menu FROM MENU_HISTORY m WHERE m.RESTAURANT_ID=:restId", nativeQuery = true)
+    List<MenuProjection> getAllMenusForRestaurant(@Param("restId") int restId);
+
 
     @Transactional
     @Modifying

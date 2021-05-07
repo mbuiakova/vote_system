@@ -1,5 +1,6 @@
 package app.repository;
 
+import app.entity.Menu;
 import app.entity.Restaurant;
 import app.entity.Vote;
 import app.exception.IllegalRequestDataException;
@@ -12,7 +13,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,19 +38,19 @@ class RestaurantRepositoryImplTest {
 
     @Test
     void save() {
-        Restaurant created = repository.save(getNew());
+        Restaurant created = repository.save(getNewRestaurant());
         int newId = created.getId();
-        Restaurant newRestaurant = getNew();
+        Restaurant newRestaurant = getNewRestaurant();
         newRestaurant.setId(newId);
         RESTAURANT_TEST_MATCHER.assertMatch(created, newRestaurant);
         RESTAURANT_TEST_MATCHER.assertMatch(repository.getById(newId), newRestaurant);
     }
 
     @Test
-    void update(){
-        Restaurant updated = getUpdated();
+    void update() {
+        Restaurant updated = getUpdatedRestaurant();
         repository.save(updated);
-        RESTAURANT_TEST_MATCHER.assertMatch(repository.getById(REST_ID_1), getUpdated());
+        RESTAURANT_TEST_MATCHER.assertMatch(repository.getById(REST_ID_1), getUpdatedRestaurant());
     }
 
     @Test
@@ -60,7 +60,7 @@ class RestaurantRepositoryImplTest {
     }
 
     @Test
-    void deleteNotFound(){
+    void deleteNotFound() {
         assertFalse(repository.delete(NOT_FOUND));
     }
 
@@ -91,7 +91,7 @@ class RestaurantRepositoryImplTest {
     }
 
     @Test
-    void saveVote(){
+    void saveVote() {
         Vote vote = getNewVoteWithBaseDate();
         assertTrue(repository.saveVote(vote.getRestaurantId(), baseDate, vote.getUserId()));
         List<Vote> votes = repository.getVotesForRestaurant(vote.getRestaurantId())
@@ -102,17 +102,17 @@ class RestaurantRepositoryImplTest {
     }
 
     @Test
-    void getAllVotes(){
+    void getAllVotes() {
         VOTE_TEST_MATCHER.assertMatch(repository.getAllVotes(), votes);
     }
 
     @Test
-    void getVotesForRestaurant(){
+    void getVotesForRestaurant() {
         VOTE_TEST_MATCHER.assertMatch(repository.getVotesForRestaurant(3), List.of(vote1));
     }
 
     @Test
-    void changeVoteBeforeTime(){
+    void changeVoteBeforeTime() {
         Vote updated = getUpdatedVote();
         repository.saveVote(updated.getRestaurantId(), baseDate, updated.getUserId());
         List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
@@ -123,9 +123,26 @@ class RestaurantRepositoryImplTest {
     }
 
     @Test
-    void changeVoteAfterTime(){
+    void changeVoteAfterTime() {
         Vote updated = getUpdatedVote();
         assertThrows(IllegalRequestDataException.class, () -> repository.saveVote(updated.getRestaurantId(), datetimeAfter, updated.getUserId()));
+    }
 
+    @Test
+    void saveMenu(){
+        Menu menu = getNewMenu();
+        assertTrue(repository.saveMenu(REST_ID_1+2, menu.getDate(), menu.getMenu()));
+        Menu created = repository.getMenuByDateForRestaurant(menu.getDate(), REST_ID_1+2);
+        MENU_TEST_MATCHER.assertMatch(menu, created);
+    }
+
+    @Test
+    void getMenuByDateForRestaurant(){
+        MENU_TEST_MATCHER.assertMatch(repository.getMenuByDateForRestaurant(baseDate.toLocalDate(), REST_ID_1 + 1), menu2_4);
+    }
+
+    @Test
+    void getAllMenusForRestaurant(){
+        MENU_TEST_MATCHER.assertMatch(repository.getAllMenusForRestaurant(REST_ID_1 + 1), menus_rest_2);
     }
 }
