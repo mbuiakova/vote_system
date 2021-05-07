@@ -47,6 +47,4 @@ public class UserRestController extends AbstractUserController {
         validateBeforeUpdate(userTo, authUser.getId());
         super.update(userTo);
     }
-
-
 }

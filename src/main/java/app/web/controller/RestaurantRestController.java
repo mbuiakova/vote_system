@@ -92,18 +92,25 @@ public class RestaurantRestController {
         repository.save(restaurant);
     }
 
-    @PostMapping(value = "/{id}/vote", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}/vote")
     public ResponseEntity<Vote> saveVote(@PathVariable int id) {
         log.info("register vote for restaurant {}", id);
 
         LocalDateTime dateTime = LocalDateTime.now(clock);
+
+        if (repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id) == null) {
+            throw new IllegalRequestDataException("Can't vote for restaurant without menu on this day.");
+        }
+
         Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
-        repository.saveVote(id, dateTime, SecurityUtil.authUserId());
+        if (!repository.saveVote(id, dateTime, SecurityUtil.authUserId())) {
+            throw new IllegalRequestDataException("Can't save vote.");
+        }
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}/vote")
                 .buildAndExpand(created.getRestaurantId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).contentType(MediaType.APPLICATION_JSON).body(created);
     }
 
     @GetMapping("/votes")
