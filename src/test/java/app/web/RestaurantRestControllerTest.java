@@ -157,8 +157,9 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void saveVoteAuth() throws Exception {
         Vote newVote = getNewVoteWithBaseDate();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/vote")
-                .contentType(MediaType.APPLICATION_JSON)
+        newVote.setRestaurantId(6);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 3) + "/vote")
+                //.contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))).andExpect(status().isCreated());//TestUtil.userAuth(UserTestData.user)
 
         Vote created = TestUtil.readFromJson(action, Vote.class);

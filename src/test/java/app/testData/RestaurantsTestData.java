@@ -28,8 +28,9 @@ public class RestaurantsTestData {
     public static final Restaurant rest_1 = new Restaurant(REST_ID_1, "Dominos", List.of(new Menu(LocalDate.of(2021, 4, 20), "item, item2, item3, drink, dessert")));
     public static final Restaurant rest_2 = new Restaurant(REST_ID_1 +1, "TrackFood", List.of(new Menu(LocalDate.of(2021, 4, 20), "pizza, pizza, pizza, cola, sugar"), new Menu(LocalDate.of(2021, 04, 21), "bread, salad, cheese, cola")));
     public static final Restaurant rest_3 = new Restaurant(REST_ID_1 + 2, "PapaPizza");
+    public static final Restaurant rest_4 = new Restaurant(REST_ID_1 + 3, "Dutch Food", List.of(new Menu(LocalDate.of(2021, 4, 20),"Stamppot, Hutspot, Hachee, Huzarensalade")));
 
-    public static final List<Restaurant> restaurants = List.of(rest_1, rest_2, rest_3);
+    public static final List<Restaurant> restaurants = List.of(rest_1, rest_2, rest_3, rest_4);
 
     public static final Vote vote1 = new Vote(REST_ID_1, LocalDate.of(2021, 4, 20), UserTestData.USER_ID);
     public static final Vote vote2 = new Vote(REST_ID_1 + 1, LocalDate.of(2021, 4, 20), UserTestData.ADMIN_ID);
