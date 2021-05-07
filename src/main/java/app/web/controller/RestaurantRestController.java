@@ -7,6 +7,7 @@ import app.exception.IllegalRequestDataException;
 import app.exception.NotFoundException;
 import app.repository.restaurant.RestaurantRepository;
 import app.util.SecurityUtil;
+import app.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,7 @@ public class RestaurantRestController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
+        ValidationUtil.assureIdConsistent(restaurant, id);
         repository.save(restaurant);
     }
 
