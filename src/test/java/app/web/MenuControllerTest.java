@@ -4,7 +4,6 @@ import app.entity.Menu;
 import app.repository.restaurant.RestaurantRepository;
 import app.testData.TestUtil;
 import app.web.json.JsonUtil;
-import com.jogamp.nativewindow.CapabilitiesFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
