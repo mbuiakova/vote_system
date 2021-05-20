@@ -1,12 +1,8 @@
 package app.web.controller;
 
-import app.entity.Menu;
 import app.entity.Restaurant;
-import app.entity.Vote;
-import app.exception.IllegalRequestDataException;
 import app.exception.NotFoundException;
 import app.repository.restaurant.RestaurantRepository;
-import app.util.SecurityUtil;
 import app.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -90,77 +83,5 @@ public class RestaurantRestController {
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         ValidationUtil.assureIdConsistent(restaurant, id);
         repository.save(restaurant);
-    }
-
-    @PostMapping(value = "/{id}/vote")
-    public ResponseEntity<Vote> saveVote(@PathVariable int id) {
-        log.info("register vote for restaurant {}", id);
-
-        LocalDateTime dateTime = LocalDateTime.now(clock);
-
-        if (repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id) == null) {
-            throw new IllegalRequestDataException("Can't vote for restaurant without menu on this day.");
-        }
-
-        Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
-        if (!repository.saveVote(id, dateTime, SecurityUtil.authUserId())) {
-            throw new IllegalRequestDataException("Can't save vote.");
-        }
-
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}/vote")
-                .buildAndExpand(created.getRestaurantId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).contentType(MediaType.APPLICATION_JSON).body(created);
-    }
-
-    @GetMapping("/votes")
-    public List<Vote> getAllVotes() {
-        log.info("get all votes");
-        return repository.getAllVotes();
-    }
-
-    @GetMapping("/{id}/votes")
-    public List<Vote> getVotesForRestaurant(@PathVariable int id) {
-        log.info("get all votes for restaurant {}", id);
-        return repository.getVotesForRestaurant(id);
-    }
-
-    @PutMapping(value = "/{id}/vote", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public void updateVote(@Valid @RequestBody Vote vote, @PathVariable int id) {
-        log.info("update vote for restaurant {}", id);
-        LocalDateTime time = LocalDateTime.now(clock);
-        repository.saveVote(id, time, vote.getUserId());
-    }
-
-    @PostMapping(value = "/{id}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Menu> saveMenu(@RequestBody String menu, @PathVariable int id) {
-        log.info("register menu for restaurant {}", id);
-
-        if (menu.isEmpty() || menu.isBlank()) throw new IllegalRequestDataException("You can't save empty menu");
-
-        LocalDateTime dateTime = LocalDateTime.now(clock);
-        if (repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id) != null) {
-            throw new IllegalRequestDataException("You can't create the menu, it already exists");
-        }
-
-        repository.saveMenu(id, dateTime.toLocalDate(), menu);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}/menu")
-                .buildAndExpand(id).toUri();
-        Menu created = repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id);
-        return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @GetMapping("/{id}/menu")
-    public Menu getMenuByDateForRestaurant(@RequestParam @NotNull LocalDate date, @PathVariable int id) {
-        log.info("get menu for restaurant {}", id);
-        return repository.getMenuByDateForRestaurant(date, id);
-    }
-
-    @GetMapping("/{id}/menus")
-    public List<Menu> getAllMenusForRestaurant(@PathVariable int id) {
-        log.info("get all menus for restaurant {}", id);
-        return repository.getAllMenusForRestaurant(id);
     }
 }

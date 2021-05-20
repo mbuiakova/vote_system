@@ -1,8 +1,6 @@
 package app.web;
 
-import app.entity.Menu;
 import app.entity.Restaurant;
-import app.entity.Vote;
 import app.repository.restaurant.RestaurantRepository;
 import app.testData.TestUtil;
 import app.testData.UserTestData;
@@ -17,17 +15,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.Clock;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.Clock;;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static app.testData.RestaurantsTestData.*;
-import static app.testData.TestUtil.*;
 import static app.testData.UserTestData.*;
 
 class RestaurantRestControllerTest extends AbstractControllerTest {
@@ -153,110 +147,4 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(newR))
                 .with(TestUtil.userHttpBasic(user))).andExpect(status().isForbidden());
     }
-
-    @Test
-    void saveVoteAuth() throws Exception {
-        Vote newVote = getNewVoteWithBaseDate();
-        newVote.setRestaurantId(6);
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 3) + "/vote")
-                //.contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(user))).andExpect(status().isCreated());//TestUtil.userAuth(UserTestData.user)
-
-        Vote created = TestUtil.readFromJson(action, Vote.class);
-        VOTE_TEST_MATCHER.assertMatch(created, newVote);
-    }
-
-    @Test
-    void saveVoteAnonymous() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/vote")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void getAllVotes() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "votes")
-                .with(userHttpBasic(user)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_TEST_MATCHER.contentJson(votes));
-    }
-
-    @Test
-    void getVotesForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + REST_ID_1 + "/votes")
-                .with(userHttpBasic(user)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_TEST_MATCHER.contentJson(List.of(vote1)));
-    }
-
-    @Test
-    void updateVote() throws Exception {
-        Vote updated = getUpdatedVote();//2021, 4, 20
-
-        perform(MockMvcRequestBuilders.put(REST_URL + (REST_ID_1 + 1) + "/vote" )
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated))
-                .with(TestUtil.userHttpBasic(user))).andExpect(status().isOk());
-
-        List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
-                .stream()
-                .filter(e -> e.getDate().equals(updated.getDate()) && e.getUserId() == updated.getUserId())
-                .collect(Collectors.toList());
-        assertFalse(votes.isEmpty());
-    }
-
-    @Test
-    void createMenu_ifAdmin() throws Exception {
-        Menu newMenu = getNewMenu();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/menu" )
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newMenu.getMenu()))
-                .with(userHttpBasic(admin))).andExpect(status().isCreated());
-
-        Menu created = TestUtil.readFromJson(action, Menu.class);
-        MENU_TEST_MATCHER.assertMatch(created, newMenu);
-    }
-
-    @Test
-    void createMenu_ifUser() throws Exception {
-        Menu newMenu = getNewMenu();
-        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/menu")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newMenu.getMenu()))
-                .with(userHttpBasic(user))).andExpect(status().isForbidden());
-    }
-
-    @Test
-    void createMenu_ifExist() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1) +"/menu")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(menu1_3.getMenu()))
-                .with(userHttpBasic(user))).andExpect(status().isForbidden());
-    }
-
-    @Test
-    void getMenuByDateForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + REST_ID_1 + "/menu")
-                .param("date", "2021-04-20")
-                .with(userHttpBasic(user)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_TEST_MATCHER.contentJson(List.of(menu1_3)));
-    }
-
-    @Test
-    void getAllMenusForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + (REST_ID_1 +1) +"/menus")
-        .with(userHttpBasic(user)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_TEST_MATCHER.contentJson(menus_rest_2));
-    }
-
 }

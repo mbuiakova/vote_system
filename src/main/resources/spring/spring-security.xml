@@ -9,13 +9,20 @@
                 id="passwordEncoder"
                 factory-method="getInstance"/>
 
-    <http>
+    <http name="restSecurityFilterChain" create-session="never">
         <intercept-url pattern="/profile/register" access="isAnonymous()"/>
         <intercept-url method="DELETE" pattern="/restaurants/**" access="hasRole('ADMIN')"/>
         <intercept-url method="POST" pattern="/restaurants/*/vote/**" access="isAuthenticated()"/>
         <intercept-url method="PUT" pattern="/restaurants/*/vote/**" access="isAuthenticated()"/>
         <intercept-url method="POST" pattern="/restaurants/**" access="hasRole('ADMIN')"/>
         <intercept-url method="PUT" pattern="/restaurants/**" access="hasRole('ADMIN')"/>
+
+        <intercept-url method="DELETE" pattern="/menus/**" access="hasRole('ADMIN')"/>
+        <intercept-url method="POST" pattern="/menus/**" access="hasRole('ADMIN')"/>
+        <intercept-url method="PUT" pattern="/menus/**" access="hasRole('ADMIN')"/>
+
+        <intercept-url method="POST" pattern="/votes/**" access="isAuthenticated()"/>
+        <intercept-url method="PUT" pattern="/votes/**" access="isAuthenticated()"/>
 
         <intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
         <intercept-url pattern="/swagger-ui.html" access="permitAll()"/>

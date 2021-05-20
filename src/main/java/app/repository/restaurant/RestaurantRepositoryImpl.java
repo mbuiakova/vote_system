@@ -19,6 +19,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     private final RestaurantRepositoryJpa repository;
 
+    private static final LocalTime LIMIT_FOR_CHANGE_VOTE = LocalTime.of(11, 0, 0);
+
     public RestaurantRepositoryImpl(RestaurantRepositoryJpa repository) {
         this.repository = repository;
     }
@@ -60,8 +62,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         if (vote == null) {
             return repository.saveVote(restId, date.toLocalDate(), userId) != 0;
         } else {
-            if (date.toLocalTime().isAfter(LocalTime.of(11, 0, 0))) {
-                throw new IllegalRequestDataException("You can't change the vote, it is already 11 o'clock");
+            if (date.toLocalTime().isAfter(LIMIT_FOR_CHANGE_VOTE)) {
+                throw new IllegalRequestDataException("You can't change the vote, it is already " + LIMIT_FOR_CHANGE_VOTE + " o'clock");
             }
             return repository.changeVote(restId, vote.getDate(), vote.getUserId()) != 0;
         }

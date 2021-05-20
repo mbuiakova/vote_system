@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 //@ContextConfiguration(locations = {"classpath:spring/spring-app.xml",
 //        "classpath:spring/spring-db.xml"})
 // Надо все профили для работы. У нас это типы для hibernate и базы данных.
-@ActiveProfiles({"hsqldb", "datajpa"})
+//@ActiveProfiles({"hsqldb", "datajpa"})
 //@WebAppConfiguration // работает и без него, т.к. в SpringJUnitConfig уже он есть.
 @Sql(scripts = {"classpath:db/initDB.sql", "classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))//,
 class RestaurantRepositoryImplTest {
