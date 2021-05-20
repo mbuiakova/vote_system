@@ -6,7 +6,7 @@ import app.to.UserTo;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AuthorizedUser extends org.springframework.security.core.userdetails.User{
+public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
 
     //@Serial java15
     private static final long serialVersionUID = 1L;
@@ -14,7 +14,7 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
     private UserTo userTo;
 
     public AuthorizedUser(User user) {
-        super(user.getName(), user.getPassword(),true, true, true, true, AuthorizedUser.getRoles(user));
+        super(user.getName(), user.getPassword(), true, true, true, true, AuthorizedUser.getRoles(user));
         setTo(UserUtil.asTo(user));
     }
 

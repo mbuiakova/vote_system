@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name="users_unique_email_idx")})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 public class User extends AbstractNamedEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -25,7 +25,8 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail {
     @Column(name = "is_admin", nullable = false, columnDefinition = "bool default false")
     private boolean isAdmin;
 
-    public User(){}
+    public User() {
+    }
 
     public User(String email, String password, boolean isAdmin) {
         this.email = email;

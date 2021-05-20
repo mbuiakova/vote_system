@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
-public interface UserRepositoryJPA extends JpaRepository<User, Integer> {
+public interface UserRepositoryJpa extends JpaRepository<User, Integer> {
 
     @Transactional
     @Modifying

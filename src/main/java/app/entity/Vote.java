@@ -23,7 +23,7 @@ public class Vote implements Serializable, VoteProjection {
         this.userId = userId;
     }
 
-    public Vote(Vote v){
+    public Vote(Vote v) {
         this.restaurantId = v.getRestaurantId();
         this.date = v.getDate();
         this.userId = v.getUserId();

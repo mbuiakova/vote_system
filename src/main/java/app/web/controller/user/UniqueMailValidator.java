@@ -4,7 +4,6 @@ package app.web.controller.user;
 import app.HasIdAndEmail;
 import app.entity.User;
 import app.repository.user.UserRepository;
-import app.web.ExceptionInfoHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
@@ -30,7 +29,7 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
         if (StringUtils.hasText(user.getEmail())) {
             User dbUser = repository.getByEmail(user.getEmail().toLowerCase());
             if (dbUser != null && !dbUser.getId().equals(user.getId())) {
-                errors.rejectValue("email", ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL);
+                errors.rejectValue("email", "duplicate email");
             }
         }
     }

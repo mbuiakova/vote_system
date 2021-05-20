@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 
 import java.util.List;
 
-public class AbstractUserController {
+public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -40,29 +40,29 @@ public class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
-    public List<User> getAll(){
+    public List<User> getAll() {
         log.info("getAll");
         return repository.getAll();
     }
 
-    public User create(User user){
+    public User create(User user) {
         log.info("create {}", user);
         ValidationUtil.checkNew(user);
         return repository.save(user);
     }
 
-    public User create(UserTo userTo){
+    public User create(UserTo userTo) {
         log.info("create {}", userTo);
         ValidationUtil.checkNew(userTo);
         return repository.save(UserUtil.createNewFromTo(userTo));
     }
 
-    public User getById(int id){
+    public User getById(int id) {
         log.info("get {}", id);
         return repository.get(id);
     }
 
-    public void delete(int id){
+    public void delete(int id) {
         log.info("delete {}", id);
         repository.delete(id);
     }
@@ -79,7 +79,7 @@ public class AbstractUserController {
         repository.save(UserUtil.createNewFromTo(userTo));
     }
 
-    public User getByEmail(String email){
+    public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         return repository.getByEmail(email);
     }

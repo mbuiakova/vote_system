@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Repository
 public class RestaurantRepositoryImpl implements RestaurantRepository {
 
-    private final RestaurantRepositoryJPA repository;
+    private final RestaurantRepositoryJpa repository;
 
-    public RestaurantRepositoryImpl(RestaurantRepositoryJPA repository) {
+    public RestaurantRepositoryImpl(RestaurantRepositoryJpa repository) {
         this.repository = repository;
     }
 

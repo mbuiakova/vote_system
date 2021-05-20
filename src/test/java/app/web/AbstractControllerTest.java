@@ -19,7 +19,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringJUnitWebConfig(locations = {
-        "classpath:spring/spring-app.xml", "classpath:spring/spring-db.xml", "classpath:spring/spring-mvc.xml", "classpath:spring/spring-time-test.xml"
+        "classpath:spring/spring-app.xml", "classpath:spring/spring-db.xml", "classpath:spring/spring-mvc.xml", "classpath:spring-time-test.xml"
 })
 @ActiveProfiles({"hsqldb", "datajpa"})
 @Transactional

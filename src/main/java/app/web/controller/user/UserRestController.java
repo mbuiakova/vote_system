@@ -14,6 +14,7 @@ import app.util.AuthorizedUser;
 
 import javax.validation.Valid;
 import java.net.URI;
+
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
@@ -22,19 +23,19 @@ public class UserRestController extends AbstractUserController {
     static final String REST_URL = "/profile";
 
     @GetMapping
-    public User get(@AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser){
+    public User get(@AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser) {
         return super.getById(authUser.getId());
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser){
+    public void delete(@AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser) {
         super.delete(authUser.getId());
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo){
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         User created = super.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();

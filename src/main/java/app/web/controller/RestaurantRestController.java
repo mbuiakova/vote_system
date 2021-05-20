@@ -137,7 +137,7 @@ public class RestaurantRestController {
     public ResponseEntity<Menu> saveMenu(@RequestBody String menu, @PathVariable int id) {
         log.info("register menu for restaurant {}", id);
 
-        if(menu.isEmpty() || menu.isBlank()) throw new IllegalRequestDataException("You can't save empty menu");
+        if (menu.isEmpty() || menu.isBlank()) throw new IllegalRequestDataException("You can't save empty menu");
 
         LocalDateTime dateTime = LocalDateTime.now(clock);
         if (repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id) != null) {

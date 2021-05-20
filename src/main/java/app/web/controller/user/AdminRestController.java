@@ -55,7 +55,7 @@ public class AdminRestController extends AbstractUserController {
     @Override
     @GetMapping("/by")
     public User getByEmail(@RequestParam String email) {
-        if(email.isEmpty() || email.isBlank()) throw new IllegalRequestDataException("Email is empty");
+        if (email.isEmpty() || email.isBlank()) throw new IllegalRequestDataException("Email is empty");
         return super.getByEmail(email);
     }
 

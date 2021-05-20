@@ -1,4 +1,4 @@
-package app.util;
+package app;
 
 import java.time.Clock;
 import java.time.LocalDateTime;

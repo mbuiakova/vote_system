@@ -8,9 +8,9 @@ import java.util.List;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private final UserRepositoryJPA repository;
+    private final UserRepositoryJpa repository;
 
-    public UserRepositoryImpl(UserRepositoryJPA repository) {
+    public UserRepositoryImpl(UserRepositoryJpa repository) {
         this.repository = repository;
     }
 
@@ -21,7 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-       return repository.save(user);
+        return repository.save(user);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getByEmail(String email){
+    public User getByEmail(String email) {
         return repository.getByEmail(email);
     }
 
