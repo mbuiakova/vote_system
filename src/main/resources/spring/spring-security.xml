@@ -5,7 +5,6 @@
 	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http pattern="/resources/**" security="none"/>
-    <http pattern="/webjars/**" security="none"/>
     <beans:bean class="org.springframework.security.crypto.password.NoOpPasswordEncoder"
                 id="passwordEncoder"
                 factory-method="getInstance"/>

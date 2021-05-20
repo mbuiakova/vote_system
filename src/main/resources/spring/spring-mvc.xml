@@ -41,29 +41,16 @@
     </bean>
 
     <!--  Swagger2  https://medium.com/@andreymamontov/swagger-2-configuration-with-spring-xml-3cd643a12425 -->
-    <mvc:resources order="1" location="classpath:/META-INF/resources/" mapping="/resources/**" />
-    <mvc:resources mapping="/webjars/**"
-                   location="classpath:/META-INF/resources/webjars/" />
+    <mvc:resources order="1" location="classpath:/META-INF/resources/" mapping="/resources/**"/>
     <context:component-scan base-package="app.web">
         <context:include-filter type="annotation"
-                                expression="org.springframework.stereotype.Controller" />
+                                expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation"
-                                expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
 
     <bean class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration"/>
-    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />
-
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
-          p:cacheSeconds="5"
-          p:defaultEncoding="UTF-8">
-        <property name="basenames" value="file:///#{systemEnvironment[VOTE_SYSTEM_ROOT]}/config/messages/app"/>
-        <property name="fallbackToSystemLocale" value="false"/>
-    </bean>
-
-    <bean class="org.springframework.context.support.MessageSourceAccessor">
-        <constructor-arg ref="messageSource"/>
-    </bean>
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
 
     <!--    https://stackoverflow.com/a/23615478/548473-->
     <bean id="defaultValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
