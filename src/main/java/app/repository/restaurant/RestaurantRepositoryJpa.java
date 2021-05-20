@@ -32,6 +32,11 @@ public interface RestaurantRepositoryJpa extends JpaRepository<Restaurant, Integ
     @Query(value = "INSERT INTO MENU_HISTORY (restaurant_id, date, menu) VALUES (:restId, :date, :menu)", nativeQuery = true)
     int saveMenu(@Param("restId") int restId, @Param("date") LocalDate date, @Param("menu") String menu);
 
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE MENU_HISTORY m SET MENU=(:menu) WHERE m.RESTAURANT_ID=:restId AND m.DATE=:date", nativeQuery = true)
+    int updateMenu(@Param("restId") int restId, @Param("date") LocalDate date, @Param("menu") String menu);
+
     @Query(value = "SELECT m.date AS date, m.MENU AS menu FROM MENU_HISTORY m WHERE m.DATE=:date AND m.RESTAURANT_ID=:restId", nativeQuery = true)
     Optional<MenuProjection> getMenuByDateForRestaurant(@Param("date") LocalDate date, @Param("restId") int restId);
 

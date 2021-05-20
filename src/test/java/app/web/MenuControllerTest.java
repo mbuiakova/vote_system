@@ -4,6 +4,7 @@ import app.entity.Menu;
 import app.repository.restaurant.RestaurantRepository;
 import app.testData.TestUtil;
 import app.web.json.JsonUtil;
+import com.jogamp.nativewindow.CapabilitiesFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,7 +35,7 @@ class MenuControllerTest extends AbstractControllerTest {
     @Test
     void createMenu_ifAdmin() throws Exception {
         Menu newMenu = getNewMenu();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/menu" )
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/menu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenu.getMenu()))
                 .with(userHttpBasic(admin))).andExpect(status().isCreated());
@@ -54,7 +55,7 @@ class MenuControllerTest extends AbstractControllerTest {
 
     @Test
     void createMenu_ifExist() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1) +"/menu")
+        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1) + "/menu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menu1_3.getMenu()))
                 .with(userHttpBasic(user))).andExpect(status().isForbidden());//403
@@ -73,12 +74,22 @@ class MenuControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllMenusForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + (REST_ID_1 +1) +"/menus")
-        .with(userHttpBasic(user)))
+        perform(MockMvcRequestBuilders.get(REST_URL + (REST_ID_1 + 1) + "/menus")
+                .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MENU_TEST_MATCHER.contentJson(menus_rest_2));
+    }
+
+    @Test
+    void updateMenu() throws Exception {
+        Menu menu = getNewMenu();
+        perform(MockMvcRequestBuilders.put(REST_URL + rest_4.getId() + "/menu")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(menu.getMenu()))
+                .with(TestUtil.userHttpBasic(admin)))
+                .andExpect(status().isOk());
     }
 
 }

@@ -6,6 +6,7 @@ import app.repository.restaurant.RestaurantRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,15 @@ public class MenuController {
                 .buildAndExpand(id).toUri();
         Menu created = repository.getMenuByDateForRestaurant(dateTime.toLocalDate(), id);
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @PutMapping(value = "/{id}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateMenu(@RequestBody String menu, @PathVariable int id){
+        log.info("update menu for restaurant {}", id);
+        if (menu.isEmpty() || menu.isBlank()) throw new IllegalRequestDataException("You can't save empty menu");
+        LocalDateTime dateTime = LocalDateTime.now(clock);
+        repository.saveMenu(id, dateTime.toLocalDate(), menu);
     }
 
     @GetMapping("/{id}/menu")

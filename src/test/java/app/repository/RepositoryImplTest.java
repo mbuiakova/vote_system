@@ -1,6 +1,7 @@
 package app.repository;
 
 import app.entity.Menu;
+import app.entity.MenuProjection;
 import app.entity.Restaurant;
 import app.entity.Vote;
 import app.exception.IllegalRequestDataException;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 //@ActiveProfiles({"hsqldb", "datajpa"})
 //@WebAppConfiguration // работает и без него, т.к. в SpringJUnitConfig уже он есть.
 @Sql(scripts = {"classpath:db/initDB.sql", "classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))//,
-class RestaurantRepositoryImplTest {
+class RepositoryImplTest {
 
     @Autowired
     private RestaurantRepository repository;
@@ -144,5 +145,13 @@ class RestaurantRepositoryImplTest {
     @Test
     void getAllMenusForRestaurant(){
         MENU_TEST_MATCHER.assertMatch(repository.getAllMenusForRestaurant(REST_ID_1 + 1), menus_rest_2);
+    }
+
+    @Test
+    void updateMenu(){
+        Menu menu = repository.getMenuByDateForRestaurant(baseDate.toLocalDate(), rest_4.getId());
+        menu.setMenu("new menu for restaurant n 4");
+        repository.saveMenu(rest_4.getId(), menu.getDate(), menu.getMenu());
+        MENU_TEST_MATCHER.assertMatch(repository.getMenuByDateForRestaurant(baseDate.toLocalDate(), rest_4.getId()), menu);
     }
 }

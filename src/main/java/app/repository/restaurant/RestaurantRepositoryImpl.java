@@ -92,6 +92,9 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     public boolean saveMenu(int restId, LocalDate date, String menu) {
+        if (getMenuByDateForRestaurant(date, restId) != null) {
+            return repository.updateMenu(restId, date, menu) != 0;
+        }
         return repository.saveMenu(restId, date, menu) != 0;
     }
 
