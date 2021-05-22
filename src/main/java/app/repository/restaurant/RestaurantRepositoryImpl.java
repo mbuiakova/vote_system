@@ -3,13 +3,10 @@ package app.repository.restaurant;
 import app.entity.Menu;
 import app.entity.Restaurant;
 import app.entity.Vote;
-import app.exception.IllegalRequestDataException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,8 +15,6 @@ import java.util.stream.Collectors;
 public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     private final RestaurantRepositoryJpa repository;
-
-    private static final LocalTime LIMIT_FOR_CHANGE_VOTE = LocalTime.of(11, 0, 0);
 
     public RestaurantRepositoryImpl(RestaurantRepositoryJpa repository) {
         this.repository = repository;
@@ -57,16 +52,13 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public boolean saveVote(int restId, LocalDateTime date, int userId) {
-        Vote vote = getVoteByDateAndUserId(date.toLocalDate(), userId);
-        if (vote == null) {
-            return repository.saveVote(restId, date.toLocalDate(), userId) != 0;
-        } else {
-            if (date.toLocalTime().isAfter(LIMIT_FOR_CHANGE_VOTE)) {
-                throw new IllegalRequestDataException("You can't change the vote, it is already " + LIMIT_FOR_CHANGE_VOTE + " o'clock");
-            }
-            return repository.changeVote(restId, vote.getDate(), vote.getUserId()) != 0;
-        }
+    public boolean saveVote(int restId, LocalDate date, int userId) {
+        return repository.saveVote(restId, date, userId) != 0;
+    }
+
+    @Override
+    public boolean changeVote(int restId, LocalDate date, int userId) {
+        return repository.changeVote(restId, date, userId) != 0;
     }
 
     @Override
@@ -85,6 +77,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Vote getVoteByDateAndUserId(LocalDate date, int userId) {
         Optional<Vote> v = repository.getVoteByDateAndUserId(date, userId).map(e -> new Vote(e.getRestaurantId(), e.getDate(), e.getUserId()));
         return v.orElse(null); // !!!! make a constructor in Vote with VoteProjection

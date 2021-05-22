@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 public class Role implements GrantedAuthority {
 
-    boolean isAdmin = false;
+    boolean isAdmin;
 
     public Role(boolean isAdmin) {
         this.isAdmin = isAdmin;

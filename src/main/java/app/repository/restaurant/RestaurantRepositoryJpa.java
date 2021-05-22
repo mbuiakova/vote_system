@@ -1,6 +1,8 @@
 package app.repository.restaurant;
 
-import app.entity.*;
+import app.entity.MenuProjection;
+import app.entity.Restaurant;
+import app.entity.VoteProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

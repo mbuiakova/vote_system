@@ -7,6 +7,7 @@ import org.hamcrest.text.IsEmptyString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static app.testData.UserTestData.*;
 import static app.testData.TestUtil.*;
 
+@ActiveProfiles({"baseDateClock"})
 class AdminRestControllerTest extends AbstractControllerTest {
 
     static final String REST_URL = "/admin/users/";

@@ -1,6 +1,6 @@
 # Vote system
 [![CI](https://github.com/mbuiakova/vote_system/actions/workflows/ci.yml/badge.svg)](https://github.com/mbuiakova/vote_system/actions/workflows/ci.yml)
-[![MIT licensed](https://img.shields.io/badge/license-no--license-lightgrey)](./LICENSE)
+[![No license](https://img.shields.io/badge/license-no--license-lightgrey)](https://choosealicense.com/no-permission/)
 
 A simple vote system for restaurants' menu.
 

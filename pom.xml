@@ -11,7 +11,7 @@
 
     <name>Vote System</name>
     <!-- FIXME change it to the project's website -->
-    <url></url>
+    <url>https://github.com/mbuiakova/vote_system</url>
 
     <properties>
         <java.version>11</java.version>
@@ -61,50 +61,9 @@
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <additionalClasspathElements>
-                        <additionalClasspathElement>/home/mb/IdeaProjects/vote_system/src/test/resources</additionalClasspathElement>
+                        <additionalClasspathElement>/home/mb/IdeaProjects/vote_system/src/test/resources
+                        </additionalClasspathElement>
                     </additionalClasspathElements>
-                </configuration>
-            </plugin>
-
-            <!-- http://stackoverflow.com/questions/4305935/is-it-possible-to-supply-tomcat6s-context-xml-file-via-the-maven-cargo-plugin#4417945 -->
-            <!-- https://codehaus-cargo.github.io/cargo/Tomcat+9.x.html -->
-            <plugin>
-                <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven3-plugin</artifactId>
-                <version>1.9.2</version>
-                <configuration>
-                    <container>
-                        <containerId>tomcat9x</containerId>
-                        <systemProperties>
-                            <file.encoding>UTF-8</file.encoding>
-                            <spring.profiles.active>tomcat,datajpa</spring.profiles.active>
-                        </systemProperties>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.hsqldb</groupId>
-                                <artifactId>hsqldb</artifactId>
-                            </dependency>
-                        </dependencies>
-                    </container>
-                    <configuration>
-                        <configfiles>
-                            <configfile>
-                                <file>src/main/resources/tomcat/context.xml</file>
-                                <todir>conf/Catalina/localhost/</todir>
-                                <tofile>${project.build.finalName}.xml</tofile>
-                            </configfile>
-                        </configfiles>
-                    </configuration>
-                    <deployables>
-                        <deployable>
-                            <groupId>app</groupId>
-                            <artifactId>vote_system</artifactId>
-                            <type>war</type>
-                            <properties>
-                                <context>${project.build.finalName}</context>
-                            </properties>
-                        </deployable>
-                    </deployables>
                 </configuration>
             </plugin>
         </plugins>
@@ -313,7 +272,6 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
-
 
 
     </dependencies>

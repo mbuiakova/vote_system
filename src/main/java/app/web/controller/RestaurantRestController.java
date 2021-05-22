@@ -22,15 +22,12 @@ import java.util.List;
 @RequestMapping(value = RestaurantRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantRestController {
 
+    static final String REST_URL = "/restaurants";
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private RestaurantRepository repository;
-
     @Autowired
     private Clock clock;
-
-    static final String REST_URL = "/restaurants";
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {

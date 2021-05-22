@@ -7,10 +7,10 @@ import app.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.Clock;
 import java.util.List;
 
 import static app.testData.RestaurantsTestData.*;
@@ -21,15 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles({"baseDateClock"})
 class MenuControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = "/menus/";
 
     @Autowired
     private RestaurantRepository repository;
-
-    @Autowired
-    private Clock clock;
 
     @Test
     void createMenu_ifAdmin() throws Exception {

@@ -5,7 +5,6 @@ import app.entity.Restaurant;
 import app.entity.Vote;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RestaurantRepository {
@@ -22,7 +21,7 @@ public interface RestaurantRepository {
 
     Restaurant getByIdWithMenus(int id);
 
-    boolean saveVote(int restId, LocalDateTime date, int userId);
+    boolean saveVote(int restId, LocalDate date, int userId);
 
     List<Vote> getAllVotes();
 
@@ -33,4 +32,8 @@ public interface RestaurantRepository {
     Menu getMenuByDateForRestaurant(LocalDate date, int id);
 
     List<Menu> getAllMenusForRestaurant(int id);
+
+    boolean changeVote(int restId, LocalDate date, int userId);
+
+    Vote getVoteByDateAndUserId(LocalDate date, int userId);
 }

@@ -1,6 +1,8 @@
 package app.web.controller;
 
 import app.entity.Vote;
+import app.exception.ApplicationException;
+import app.exception.ErrorType;
 import app.exception.IllegalRequestDataException;
 import app.repository.restaurant.RestaurantRepository;
 import app.util.SecurityUtil;
@@ -16,20 +18,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
+    static final String REST_URL = "/votes";
+    private static final LocalTime LIMIT_FOR_CHANGE_VOTE = LocalTime.of(11, 0, 0);
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private RestaurantRepository repository;
-
     @Autowired
     private Clock clock;
-
-    static final String REST_URL = "/votes";
 
     @PostMapping(value = "/{id}/vote")
     public ResponseEntity<Vote> saveVote(@PathVariable int id) {
@@ -41,10 +42,15 @@ public class VoteController {
             throw new IllegalRequestDataException("Can't vote for restaurant without menu on this day.");
         }
 
-        Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
-        if (!repository.saveVote(id, dateTime, SecurityUtil.authUserId())) {
-            throw new IllegalRequestDataException("Can't save vote.");
+        if (repository.getVoteByDateAndUserId(dateTime.toLocalDate(), SecurityUtil.authUserId()) == null) {
+            if (!repository.saveVote(id, dateTime.toLocalDate(), SecurityUtil.authUserId())) {
+                throw new IllegalRequestDataException("Something went wrong with saveVote");
+            }
+        } else {
+            throw new IllegalRequestDataException("Vote already exists on date/time " + dateTime);
         }
+
+        Vote created = new Vote(id, dateTime.toLocalDate(), SecurityUtil.authUserId());
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}/vote")
@@ -57,7 +63,12 @@ public class VoteController {
     public void updateVote(@PathVariable int id) {
         log.info("update vote for restaurant {}", id);
         LocalDateTime time = LocalDateTime.now(clock);
-        repository.saveVote(id, time, SecurityUtil.authUserId());
+        if (time.toLocalTime().isAfter(LIMIT_FOR_CHANGE_VOTE)) {
+            throw new IllegalRequestDataException("You can't change the vote, it is already " + LIMIT_FOR_CHANGE_VOTE + " o'clock");
+        }
+        if (!repository.changeVote(id, time.toLocalDate(), SecurityUtil.authUserId())) {
+            throw new ApplicationException("Couldn't change the vote.", ErrorType.APP_ERROR);
+        }
     }
 
     @GetMapping("/votes")

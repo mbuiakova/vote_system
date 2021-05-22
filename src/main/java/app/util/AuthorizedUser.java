@@ -18,6 +18,12 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
         setTo(UserUtil.asTo(user));
     }
 
+    public static Set<Role> getRoles(User user) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(user.isAdmin() ? new Role(true) : new Role(false));
+        return roles;
+    }
+
     public void setTo(UserTo newTo) {
         newTo.setPassword(null);
         userTo = newTo;
@@ -38,11 +44,5 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
     @Override
     public String toString() {
         return userTo.toString();
-    }
-
-    public static Set<Role> getRoles(User user) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(user.isAdmin() ? new Role(true) : new Role(false));
-        return roles;
     }
 }

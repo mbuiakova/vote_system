@@ -1,19 +1,17 @@
 package app.repository;
 
 import app.entity.Menu;
-import app.entity.MenuProjection;
 import app.entity.Restaurant;
 import app.entity.Vote;
-import app.exception.IllegalRequestDataException;
 import app.repository.restaurant.RestaurantRepository;
 import app.testData.RestaurantsTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,10 +92,11 @@ class RepositoryImplTest {
     @Test
     void saveVote() {
         Vote vote = getNewVoteWithBaseDate();
-        assertTrue(repository.saveVote(vote.getRestaurantId(), baseDate, vote.getUserId()));
+        LocalDate date = BASE_DATE_TIME.toLocalDate().plusDays(1);
+        assertTrue(repository.saveVote(vote.getRestaurantId(), date, vote.getUserId()));
         List<Vote> votes = repository.getVotesForRestaurant(vote.getRestaurantId())
                 .stream()
-                .filter(e -> e.getDate().equals(vote.getDate()) && e.getUserId() == vote.getUserId())
+                .filter(e -> e.getDate().equals(date) && e.getUserId() == vote.getUserId())
                 .collect(Collectors.toList());
         assertFalse(votes.isEmpty());
     }
@@ -113,20 +112,14 @@ class RepositoryImplTest {
     }
 
     @Test
-    void changeVoteBeforeTime() {
+    void changeVote() {
         Vote updated = getUpdatedVote();
-        repository.saveVote(updated.getRestaurantId(), baseDate, updated.getUserId());
+        assertTrue(repository.changeVote(updated.getRestaurantId(), BASE_DATE_TIME.toLocalDate(), updated.getUserId()));
         List<Vote> votes = repository.getVotesForRestaurant(updated.getRestaurantId())
                 .stream()
                 .filter(e -> e.getDate().equals(updated.getDate()) && e.getUserId() == updated.getUserId())
                 .collect(Collectors.toList());
         assertTrue(votes.contains(updated));
-    }
-
-    @Test
-    void changeVoteAfterTime() {
-        Vote updated = getUpdatedVote();
-        assertThrows(IllegalRequestDataException.class, () -> repository.saveVote(updated.getRestaurantId(), datetimeAfter, updated.getUserId()));
     }
 
     @Test
@@ -139,7 +132,7 @@ class RepositoryImplTest {
 
     @Test
     void getMenuByDateForRestaurant(){
-        MENU_TEST_MATCHER.assertMatch(repository.getMenuByDateForRestaurant(baseDate.toLocalDate(), REST_ID_1 + 1), menu2_4);
+        MENU_TEST_MATCHER.assertMatch(repository.getMenuByDateForRestaurant(BASE_DATE_TIME.toLocalDate(), REST_ID_1 + 1), menu2_4);
     }
 
     @Test
@@ -149,9 +142,9 @@ class RepositoryImplTest {
 
     @Test
     void updateMenu(){
-        Menu menu = repository.getMenuByDateForRestaurant(baseDate.toLocalDate(), rest_4.getId());
+        Menu menu = repository.getMenuByDateForRestaurant(BASE_DATE_TIME.toLocalDate(), rest_4.getId());
         menu.setMenu("new menu for restaurant n 4");
         repository.saveMenu(rest_4.getId(), menu.getDate(), menu.getMenu());
-        MENU_TEST_MATCHER.assertMatch(repository.getMenuByDateForRestaurant(baseDate.toLocalDate(), rest_4.getId()), menu);
+        MENU_TEST_MATCHER.assertMatch(repository.getMenuByDateForRestaurant(BASE_DATE_TIME.toLocalDate(), rest_4.getId()), menu);
     }
 }

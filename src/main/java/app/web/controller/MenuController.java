@@ -22,15 +22,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = MenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MenuController {
+    static final String REST_URL = "/menus";
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private RestaurantRepository repository;
-
     @Autowired
     private Clock clock;
-
-    static final String REST_URL = "/menus";
 
     @PostMapping(value = "/{id}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Menu> saveMenu(@RequestBody String menu, @PathVariable int id) {
@@ -53,7 +50,7 @@ public class MenuController {
 
     @PutMapping(value = "/{id}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void updateMenu(@RequestBody String menu, @PathVariable int id){
+    public void updateMenu(@RequestBody String menu, @PathVariable int id) {
         log.info("update menu for restaurant {}", id);
         if (menu.isEmpty() || menu.isBlank()) throw new IllegalRequestDataException("You can't save empty menu");
         LocalDateTime dateTime = LocalDateTime.now(clock);

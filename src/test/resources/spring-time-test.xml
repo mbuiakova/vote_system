@@ -2,7 +2,18 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-<bean id="clock" class="app.CustomClock" factory-method="getClock"/>
+
+<beans profile="baseDateClock">
+    <bean id="clock" class="app.CustomClock" factory-method="getBaseDateClock"/>
+</beans>
+
+<beans profile="incorrectClock">
+    <bean id="clock" class="app.CustomClock" factory-method="getIncorrectClock"/>
+</beans>
+
+<beans profile="nextDayClock">
+    <bean id="clock" class="app.CustomClock" factory-method="getNextDayClock"/>
+</beans>
 
 
 </beans>

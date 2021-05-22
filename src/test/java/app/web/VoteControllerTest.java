@@ -1,5 +1,5 @@
 package app.web;
-;
+
 import app.entity.Vote;
 import app.repository.restaurant.RestaurantRepository;
 import app.testData.TestUtil;
@@ -7,10 +7,9 @@ import app.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.Clock;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,34 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles({"baseDateClock"})
 class VoteControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = "/votes/";
 
     @Autowired
     private RestaurantRepository repository;
-
-    @Autowired
-    private Clock clock;
-
-    @Test
-    void saveVoteAuth() throws Exception {
-        Vote newVote = getNewVoteWithBaseDate();
-        newVote.setRestaurantId(6);
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 3) + "/vote")
-                //.contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(user))).andExpect(status().isCreated());//TestUtil.userAuth(UserTestData.user)
-
-        Vote created = TestUtil.readFromJson(action, Vote.class);
-        VOTE_TEST_MATCHER.assertMatch(created, newVote);
-    }
-
-    @Test
-    void saveVoteAnonymous() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + (REST_ID_1 + 2) + "/vote")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-    }
 
     @Test
     void getAllVotes() throws Exception {
@@ -72,7 +50,7 @@ class VoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateVote() throws Exception {
+    void updateVoteBeforeTime() throws Exception {
         Vote updated = getUpdatedVote();//2021, 4, 20
 
         perform(MockMvcRequestBuilders.put(REST_URL + (REST_ID_1 + 1) + "/vote")
